@@ -1,0 +1,13 @@
+# Tested with Python 3.12, insightface 2.1, onnxruntime 1.31 (CPU only, no GPU needed)
+insightface>=0.7.3
+onnxruntime>=1.16
+opencv-python-headless>=4.8
+numpy>=1.24
+scipy>=1.10
+Pillow>=10.1
+pillow-heif>=0.16      # optional: lets iPhone .heic photos load
+fastapi>=0.110
+uvicorn>=0.27
+python-multipart>=0.0.9
+httpx>=0.26        # tests only
+pytest>=8              # tests only
