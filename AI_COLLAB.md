@@ -2,7 +2,7 @@
 
 ## Scope and evidence
 
-This is a retrospective draft based on the implemented code, project documentation, test evidence, and the AI conversation available in this VS Code session. The earlier conversations from the original implementation were not available to the assistant.
+This is a retrospective draft based on the implemented code, project documentation, test evidence, and the AI conversation available in this VS Code session. The original implementation conversation was not available to the assistant while this draft was prepared; its share link is included below, but its contents have not been independently checked.
 
 The "AI suggestion" entries below are retrospective alternatives, not quotations from those missing conversations. The "I chose" wording is a draft inferred from the implementation; edit it if it does not reflect your actual reasoning. The excerpts are literal excerpts from the conversation available here. Do not present this document as the complete project chat archive until you add the earlier chat exports or share links.
 
@@ -84,4 +84,5 @@ The "AI suggestion" entries below are retrospective alternatives, not quotations
 
 ## Full AI chat history
 
-The full project-development history from the very first implementation prompt is not available in this workspace. The excerpts above are from the current documentation session only, so they are not a substitute for the complete history requested by the assessment. Before submission, export the original AI conversations (or add share links) and append them here or include the exported files in the repository. Do not claim that this limited transcript is the full project history.
+Original project conversation: [Open the Claude AI chat](https://claude.ai/share/4868ca07-8f57-473b-a47a-29b41d5b8825).
+
