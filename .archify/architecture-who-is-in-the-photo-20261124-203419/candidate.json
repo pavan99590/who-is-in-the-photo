@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Who Is in the Photo? — Local Runtime Architecture",
+    "output": ".archify/architecture-who-is-in-the-photo-20261124-203419/architecture.html",
+    "locale": "en",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/pavan99590/who-is-in-the-photo.git",
+      "provider": "github",
+      "link_mode": "web",
+      "revision": "baac1ab55fdb99783a17a547ba1b42e40956920d"
+    }
+  },
+  "layout": {
+    "mode": "auto"
+  },
+  "components": [
+    {
+      "id": "person",
+      "type": "external",
+      "label": "Office user",
+      "sublabel": "Chooses the people folder and group photo",
+      "sources": [
+        {
+          "path": "faceid/static/index.html",
+          "line": 108,
+          "end_line": 138
+        }
+      ]
+    },
+    {
+      "id": "browser",
+      "type": "frontend",
+      "label": "Browser UI",
+      "sublabel": "Folder picker, annotated preview, results list and threshold slider",
+      "sources": [
+        {
+          "path": "faceid/static/index.html",
+          "line": 108,
+          "end_line": 154
+        },
+        {
+          "path": "faceid/static/index.html",
+          "line": 215,
+          "end_line": 232
+        },
+        {
+          "path": "faceid/static/index.html",
+          "line": 280,
+          "end_line": 310
+        }
+      ]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Local FastAPI app",
+      "sublabel": "127.0.0.1; routes uploads and returns results from in-memory state",
+      "sources": [
+        {
+          "path": "run.py",
+          "line": 14,
+          "end_line": 18
+        },
+        {
+          "path": "faceid/server.py",
+          "line": 29,
+          "end_line": 44
+        },
+        {
+          "path": "faceid/server.py",
+          "line": 127,
+          "end_line": 180
+        }
+      ]
+    },
+    {
+      "id": "core",
+      "type": "backend",
+      "label": "Face recognition core",
+      "sublabel": "Gallery, face embeddings and one-to-one Known / Unknown matching",
+      "sources": [
+        {
+          "path": "faceid/gallery.py",
+          "line": 99,
+          "end_line": 160
+        },
+        {
+          "path": "faceid/pipeline.py",
+          "line": 60,
+          "end_line": 87
+        },
+        {
+          "path": "faceid/matcher.py",
+          "line": 22,
+          "end_line": 64
+        }
+      ]
+    },
+    {
+      "id": "files",
+      "type": "database",
+      "label": "Local files",
+      "sublabel": "ONNX models in models/; cached embeddings in .cache/embeddings/",
+      "sources": [
+        {
+          "path": "faceid/config.py",
+          "line": 6,
+          "end_line": 8
+        },
+        {
+          "path": "faceid/engine.py",
+          "line": 78,
+          "end_line": 95
+        },
+        {
+          "path": "faceid/gallery.py",
+          "line": 126,
+          "end_line": 152
+        }
+      ]
+    },
+    {
+      "id": "annotator",
+      "type": "backend",
+      "label": "Photo annotator",
+      "sublabel": "Draws Known / Unknown boxes for the downloadable JPEG",
+      "sources": [
+        {
+          "path": "faceid/annotate.py",
+          "line": 25,
+          "end_line": 49
+        },
+        {
+          "path": "faceid/server.py",
+          "line": 174,
+          "end_line": 180
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "One laptop — offline runtime",
+      "wraps": [
+        "browser",
+        "api",
+        "core",
+        "files",
+        "annotator"
+      ]
+    }
+  ],
+  "connections": [
+    {
+      "id": "person-to-browser",
+      "from": "person",
+      "to": "browser",
+      "label": "selects photos"
+    },
+    {
+      "id": "browser-to-api",
+      "from": "browser",
+      "to": "api",
+      "label": "loopback HTTP: gallery + group photo",
+      "variant": "emphasis"
+    },
+    {
+      "id": "api-to-core",
+      "from": "api",
+      "to": "core",
+      "label": "enroll / identify / rematch"
+    },
+    {
+      "id": "core-to-files",
+      "from": "core",
+      "to": "files",
+      "label": "loads models; reads / writes cache"
+    },
+    {
+      "id": "api-to-browser",
+      "from": "api",
+      "to": "browser",
+      "label": "results JSON + photo"
+    },
+    {
+      "id": "api-to-annotator",
+      "from": "api",
+      "to": "annotator",
+      "label": "marked-photo download request"
+    },
+    {
+      "id": "annotator-to-browser",
+      "from": "annotator",
+      "to": "browser",
+      "label": "annotated JPEG"
+    }
+  ]
+}
