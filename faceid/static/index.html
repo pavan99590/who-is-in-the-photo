@@ -239,12 +239,14 @@ async function pollGallery() {
 }
 function renderGallery(g) {
   const usable = g.people.filter(p => p.status === "ok" || p.status === "multiple_faces");
-  $("#galleryOk").textContent = usable.length + " people ready";
+  const okEl = $("#galleryOk");
+  okEl.textContent = usable.length ? usable.length + " people ready" : "No usable photos found";
+  okEl.style.color = usable.length ? "" : "var(--warn)";
   const warns = g.people.filter(p => p.message);
   const w = $("#warns"); w.innerHTML = "";
   if (warns.length) {
-    const box = el("div", { class: "warnlist" }, el("strong", {}, warns.length + (warns.length === 1 ? " photo to double-check" : " photos to double-check")),
-      el("div", { class: "note" }, "Make sure the small face shown is the right person."));
+    const box = el("div", { class: "warnlist" }, el("strong", {}, warns.length + (warns.length === 1 ? " photo to double-check" : " photos to double-check")));
+    if (warns.some(p => p.thumb)) box.append(el("div", { class: "note" }, "Make sure the small face shown is the right person."));
     warns.forEach(p => {
       const row = el("div", { class: "wrow" });
       if (p.thumb) row.append(el("img", { src: p.thumb, alt: "" }));
@@ -257,7 +259,7 @@ function renderGallery(g) {
   g.people.forEach(p => {
     const bad = p.status === "no_face" || p.status === "unreadable";
     const pic = p.thumb ? el("img", { src: p.thumb, alt: "" }) : el("div", { class: "ph" });
-    list.append(el("div", { class: "person" + (p.message ? " warn" : ""), title: p.message || p.name }, pic, el("span", {}, bad ? p.name + " (no face)" : p.name)));
+    list.append(el("div", { class: "person" + (p.message ? " warn" : ""), title: p.message || p.name }, pic, el("span", {}, bad ? p.name + (p.status === "unreadable" ? " (not a photo)" : " (no face)") : p.name)));
   });
   $("#peopleBox").style.display = "block"; $("#peopleSum").textContent = "Show who was found (" + g.people.length + ")";
   if (usable.length) $("#step2").classList.remove("off");
@@ -390,6 +392,16 @@ async function rematch() {
   catch (e) { toast(e.message); }
 }
 $("#names").onchange = () => draw();
+
+/* ---------- dropping a file outside the drop box must never navigate away from the page ---------- */
+window.addEventListener("dragover", e => e.preventDefault());
+window.addEventListener("drop", e => {
+  e.preventDefault();
+  if (e.target.closest && e.target.closest("#drop")) return;   // the drop box handles its own drops
+  const f = e.dataTransfer && e.dataTransfer.files[0]; if (!f) return;
+  if ($("#step2").classList.contains("off")) { toast("Open the folder with everyone's photos first."); return; }
+  identify(f);
+});
 
 pollStatus();
 </script>

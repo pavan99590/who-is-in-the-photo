@@ -135,7 +135,7 @@ def enroll_items(
             try:
                 img = load_image(data, max_side=engine.cfg.gallery_max_side)
             except ImageLoadError as exc:
-                rec.status, rec.message = "unreadable", (dup_msg + f"not a readable image ({exc})").strip()
+                rec.status, rec.message = "unreadable", (dup_msg + "not a readable photo, skipped").strip()
                 records.append(rec)
                 continue
             faces = engine.detect(img.bgr, det_size=engine.cfg.gallery_det_size, tiling=False)
